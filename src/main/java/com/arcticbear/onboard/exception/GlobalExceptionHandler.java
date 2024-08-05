@@ -22,4 +22,14 @@ public class GlobalExceptionHandler {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public  ResponseEntity<String> handleCustomerNotFoundException(CustomerNotFoundException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleAllException(Exception ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
