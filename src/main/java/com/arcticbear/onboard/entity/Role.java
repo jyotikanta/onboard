@@ -1,10 +1,11 @@
 package com.arcticbear.onboard.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
@@ -12,6 +13,13 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
+    public Role(){
+
+    }
+
+    public Role(String name) {
+        this.name = name;
+    }
 
     public Short getId() {
         return id;
@@ -27,5 +35,10 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getAuthority() {
+        return name;
     }
 }

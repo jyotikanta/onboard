@@ -2,9 +2,6 @@ package com.arcticbear.onboard.entity;
 
 import de.huxhorn.sulky.ulid.ULID;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,17 +11,8 @@ import java.util.Set;
 public class User {
     @Id
     private String id;
-
-    @NotNull(message = "Email is mandatory")
-    @Email(message = "Email should be valid")
     private String email;
-
-    @NotNull(message = "Password is mandatory")
-    @Size(min=8, message="Password should be at least 8 characters")
     private String password;
-
-    @NotNull(message = "Mobile number should be mandatory")
-    @Size(max = 10, message = "Phone number should not exceed 10 characters")
     private String mobile;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -47,6 +35,14 @@ public class User {
         this.email = email;
         this.password = password;
         this.mobile = mobile;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public String getId() {
