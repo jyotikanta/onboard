@@ -1,6 +1,7 @@
-package com.arcticbear.onboard;
+package com.arcticbear.onboard.controller;
 
-import com.arcticbear.onboard.objects.Customer;
+import com.arcticbear.onboard.entity.User;
+import com.arcticbear.onboard.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping()
+@RequestMapping
 public class CustomerRestController {
     @Autowired
-    CustomerService customerService;
+    UserService userService;
 
     @GetMapping()
     public ResponseEntity<String> index(){
@@ -21,33 +22,33 @@ public class CustomerRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody Customer customer){
-        customerService.save(customer);
+    public ResponseEntity<String> register(@Valid @RequestBody User user){
+        userService.save(user);
         return new ResponseEntity<>("Customer registered successfully", HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomer(@PathVariable Long id){
-        Customer customer = customerService.findById(id);
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+    public ResponseEntity<User> getCustomer(@PathVariable String id){
+        User user = userService.findById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCustomer(@PathVariable Long id, @Valid @RequestBody Customer customer){
-        customerService.update(id, customer);
+    public ResponseEntity<String> updateCustomer(@PathVariable String id, @Valid @RequestBody User user){
+        userService.update(id, user);
         return new ResponseEntity<>("Customer updated successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable Long id){
-        customerService.delete(id);
+    public ResponseEntity<String> deleteCustomer(@PathVariable String id){
+        userService.delete(id);
         return new ResponseEntity<>("Customer deleted successfully" , HttpStatus.OK);
     }
 
     @GetMapping("/getAllCustomer")
-    public ResponseEntity<List<Customer>> getCustomers(){
-        List<Customer> customers = customerService.findAll();
-        return new ResponseEntity<>(customers, HttpStatus.OK);
+    public ResponseEntity<List<User>> getCustomers(){
+        List<User> users = userService.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 }
