@@ -2,6 +2,7 @@ package com.arcticbear.onboard.service;
 
 import com.arcticbear.onboard.exception.UserNotFoundException;
 import com.arcticbear.onboard.entity.User;
+import com.arcticbear.onboard.repository.RoleRepository;
 import com.arcticbear.onboard.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public void save(User user){
         userRepository.save(user);
