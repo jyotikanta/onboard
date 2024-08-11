@@ -92,4 +92,9 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with email : " + username));
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.getRoles());
     }
+
+    public List<User> findAllSortedByCreationTime() {
+        List<User> users = userRepository.findAllByOrderByIdDesc();
+        return users;
+    }
 }

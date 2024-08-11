@@ -1,14 +1,20 @@
 package com.arcticbear.onboard.controller;
 
 import com.arcticbear.onboard.dto.RegistrationRequest;
+import com.arcticbear.onboard.dto.UserDTO;
 import com.arcticbear.onboard.entity.User;
 import com.arcticbear.onboard.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping
@@ -42,7 +48,14 @@ public class UserRestController {
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable String id, @Valid @RequestBody RegistrationRequest request){
+    public ResponseEntity<String> updateUser(@PathVariable String id, @Valid @RequestBody RegistrationRequest request, HttpServletRequest httpRequest){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Invalidate the current session
+            httpRequest.getSession().invalidate();
+            System.out.println("Session invalidated for user: " + authentication.getName() + " : " + request.getEmail());
+        }
         userService.update(id, request);
         return new ResponseEntity<>("Customer updated successfully", HttpStatus.OK);
     }
@@ -54,9 +67,30 @@ public class UserRestController {
     }
 
     @GetMapping("/getAllUsers")
-    public ResponseEntity<List<User>> getUsers(){
+    public ResponseEntity<List<UserDTO>> getUsers(){
         List<User> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserDTO> userDTOS = users.stream().map(user->{
+            Set<String> roleNames = user.getRoles().stream()
+                    .map(role -> role.getName())
+                    .collect(Collectors.toSet());
+            return new UserDTO(user.getId(), user.getEmail(),user.getMobile(),roleNames);
+        }).collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
+
+    @GetMapping("/getAllUsersSorted")
+    public ResponseEntity<List<UserDTO>> getAllUsersSortedByCreationTime(){
+        List<User> users = userService.findAllSortedByCreationTime();
+        List<UserDTO> userDTOS = users.stream().map(user->{
+            Set<String> roleNames = user.getRoles().stream()
+                    .map(role -> role.getName())
+                    .collect(Collectors.toSet());
+            return new UserDTO(user.getId(), user.getEmail(),user.getMobile(),roleNames);
+        }).collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDTOS, HttpStatus.OK);
+    }
+
 
 }
