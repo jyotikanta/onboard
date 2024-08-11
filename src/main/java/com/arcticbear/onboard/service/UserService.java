@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -84,13 +84,6 @@ public class UserService implements UserDetailsService {
             throw new UserNotFoundException("User not found with id : " + id);
         }
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email : " + username));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.getRoles());
     }
 
     public List<User> findAllSortedByCreationTime() {
